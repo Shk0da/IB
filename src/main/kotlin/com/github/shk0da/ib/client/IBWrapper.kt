@@ -1,17 +1,16 @@
-package com.github.shk0da.ib
+package com.github.shk0da.ib.client
 
 import com.github.shk0da.ib.model.AccountSummary
+import com.github.shk0da.ib.model.OpenOrder
+import com.github.shk0da.ib.model.TickData
 import com.github.shk0da.ib.model.Ticker
 import com.ib.client.*
 import org.slf4j.LoggerFactory
 
-class IBWrapper(private val ibClient: IBClient) : EWrapper {
+
+internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
 
     private val log = LoggerFactory.getLogger(IBWrapper::class.java)
-
-    override fun tickByTickMidPoint(p0: Int, p1: Long, p2: Double) {
-        TODO("Not yet implemented")
-    }
 
     override fun historicalData(p0: Int, p1: Bar?) {
         TODO("Not yet implemented")
@@ -42,10 +41,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun newsProviders(p0: Array<out NewsProvider>?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun openOrder(p0: Int, p1: Contract?, p2: Order?, p3: OrderState?) {
         TODO("Not yet implemented")
     }
 
@@ -113,10 +108,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
         TODO("Not yet implemented")
     }
 
-    override fun nextValidId(orderId: Int) {
-        log.trace("nextValidId: ${ibClient.nextReqId()}")
-    }
-
     override fun historicalNews(p0: Int, p1: String?, p2: String?, p3: String?, p4: String?) {
         TODO("Not yet implemented")
     }
@@ -162,10 +153,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
         TODO("Not yet implemented")
     }
 
-    override fun openOrderEnd() {
-        log.debug("openOrderEnd")
-    }
-
     override fun rerouteMktDataReq(p0: Int, p1: Int, p2: String?) {
         TODO("Not yet implemented")
     }
@@ -181,6 +168,7 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
     override fun error(id: Int, errorCode: Int, errorMsg: String?) {
         if (id > 0) {
             log.warn("Error id=$id code=$errorCode msg=$errorMsg")
+            ibClient.requestEnd(id)
         } else {
             log.trace("code=$errorCode msg=$errorMsg")
         }
@@ -219,19 +207,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun bondContractDetails(p0: Int, p1: ContractDetails?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun tickByTickAllLast(
-        p0: Int,
-        p1: Int,
-        p2: Long,
-        p3: Double,
-        p4: Int,
-        p5: TickAttribLast?,
-        p6: String?,
-        p7: String?
-    ) {
         TODO("Not yet implemented")
     }
 
@@ -329,26 +304,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
         TODO("Not yet implemented")
     }
 
-    override fun orderStatus(
-        p0: Int,
-        p1: String?,
-        p2: Double,
-        p3: Double,
-        p4: Double,
-        p5: Int,
-        p6: Int,
-        p7: Double,
-        p8: Int,
-        p9: String?,
-        p10: Double
-    ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun orderBound(p0: Long, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
-    }
-
     override fun deltaNeutralValidation(p0: Int, p1: DeltaNeutralContract?) {
         TODO("Not yet implemented")
     }
@@ -382,18 +337,6 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun displayGroupList(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun tickByTickBidAsk(
-        p0: Int,
-        p1: Long,
-        p2: Double,
-        p3: Double,
-        p4: Int,
-        p5: Int,
-        p6: TickAttribBidAsk?
-    ) {
         TODO("Not yet implemented")
     }
 
@@ -440,11 +383,13 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun contractDetails(reqId: Int, contractDetails: ContractDetails?) {
-        log.info(EWrapperMsgGenerator.contractDetails(reqId, contractDetails))
+        log.trace(EWrapperMsgGenerator.contractDetails(reqId, contractDetails))
+        ibClient.requestSetValue(reqId, contractDetails)
     }
 
     override fun contractDetailsEnd(reqId: Int) {
-        log.info("ContractDetailsEnd. $reqId\n")
+        log.trace("ContractDetailsEnd. $reqId\n")
+        ibClient.requestEnd(reqId)
     }
 
     override fun symbolSamples(reqId: Int, contractDescriptions: Array<out ContractDescription>) {
@@ -452,7 +397,7 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
         val result: MutableList<Ticker> = ArrayList()
         for (description in contractDescriptions) {
             val contract = description.contract()
-            val derivatives: MutableList<String> = ArrayList();
+            val derivatives: MutableList<String> = ArrayList()
             for (derivative in description.derivativeSecTypes()) {
                 derivatives.add(derivative)
             }
@@ -467,10 +412,121 @@ class IBWrapper(private val ibClient: IBClient) : EWrapper {
                 )
             )
 
-            log.trace("Contract. ConId: ${contract.conid()}, Symbol: ${contract.symbol()}, SecType: ${contract.secType()},"
-                        + "PrimaryExch: ${contract.primaryExch()}, Currency: ${contract.currency()}, DerivativeSecTypes: $derivatives")
+            log.trace(
+                "Contract. ConId: ${contract.conid()}, Symbol: ${contract.symbol()}, SecType: ${contract.secType()},"
+                        + "PrimaryExch: ${contract.primaryExch()}, Currency: ${contract.currency()}, DerivativeSecTypes: $derivatives"
+            )
         }
         ibClient.requestSetValue(reqId, result)
         ibClient.requestEnd(reqId)
+    }
+
+    override fun tickByTickBidAsk(
+        reqId: Int,
+        time: Long,
+        bidPrice: Double,
+        askPrice: Double,
+        bidSize: Int,
+        askSize: Int,
+        tickAttribBidAsk: TickAttribBidAsk?
+    ) {
+        log.debug(
+            EWrapperMsgGenerator.tickByTickBidAsk(
+                reqId,
+                time,
+                bidPrice,
+                askPrice,
+                bidSize,
+                askSize,
+                tickAttribBidAsk
+            )
+        )
+        val result = TickData(
+            time = time,
+            bidPrice = bidPrice,
+            askPrice = askPrice,
+            bidSize = bidSize,
+            askSize = askSize,
+            tickAttribBidAsk = tickAttribBidAsk
+        )
+        ibClient.requestSetValue(reqId, result)
+        ibClient.requestEnd(reqId)
+    }
+
+    override fun tickByTickAllLast(
+        reqId: Int,
+        tickType: Int,
+        time: Long,
+        price: Double,
+        size: Int,
+        tickAttribLast: TickAttribLast?,
+        exchange: String?,
+        specialConditions: String?
+    ) {
+        log.info(
+            EWrapperMsgGenerator.tickByTickAllLast(
+                reqId,
+                tickType,
+                time,
+                price,
+                size,
+                tickAttribLast,
+                exchange,
+                specialConditions
+            )
+        )
+        val result = TickData(
+            tickType = tickType,
+            time = time,
+            price = price,
+            size = size,
+            tickAttribLast = tickAttribLast,
+            exchange = exchange,
+            specialConditions = specialConditions
+        )
+        ibClient.requestSetValue(reqId, result)
+        ibClient.requestEnd(reqId)
+    }
+
+    override fun tickByTickMidPoint(reqId: Int, time: Long, midPoint: Double) {
+        log.trace(EWrapperMsgGenerator.tickByTickMidPoint(reqId, time, midPoint))
+        val result = TickData(time = time, midPoint = midPoint)
+        ibClient.requestSetValue(reqId, result)
+        ibClient.requestEnd(reqId)
+    }
+
+    override fun nextValidId(orderId: Int) {
+        ibClient.setNextOrderId(orderId + 1)
+        log.debug("next orderId: {}", ibClient.nextOrderId())
+    }
+
+    override fun orderStatus(orderId: Int, status: String?, filled: Double, remaining: Double, avgFillPrice: Double,
+                             permId: Int, parentId: Int, lastFillPrice: Double, clientId: Int, whyHeld: String?, mktCapPrice: Double) {
+        log.debug("Order [orderId: $orderId, status: $status, filled: $filled, remaining: $remaining," +
+                " avgFillPrice: $avgFillPrice, permId: $permId, parentId: $parentId, lastFillPrice: $lastFillPrice, clientId: $clientId, " +
+                "whyHeld: $whyHeld, mktCapPrice: $mktCapPrice]")
+
+        if ("Cancelled" == status?.toLowerCase()) {
+            ibClient.requestEnd(orderId)
+        }
+    }
+
+    override fun openOrder(orderId: Int, contract: Contract?, order: Order?, orderState: OrderState?) {
+        log.trace(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState))
+        val nextOrderId = ibClient.nextOrderId()
+        val id = if (orderId != nextOrderId)  nextOrderId else orderId
+        val list = (ibClient.requestGetValue(id) ?: ArrayList<OpenOrder>()) as MutableList<OpenOrder>
+        list.add(OpenOrder(orderId, contract, order, orderState))
+        ibClient.requestSetValue(id, list)
+    }
+
+    override fun openOrderEnd() {
+        log.trace("OpenOrderEnd")
+        ibClient.requestEnd(ibClient.nextOrderId())
+    }
+
+    override fun orderBound(reqId: Long, apiClientId: Int, apiOrderId: Int) {
+        log.debug("!!!!! orderBound !!!!!!!!")
+        log.info(EWrapperMsgGenerator.orderBound(reqId, apiClientId, apiOrderId))
     }
 }
