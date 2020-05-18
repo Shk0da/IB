@@ -1,11 +1,11 @@
 package com.github.shk0da.ib
 
 import com.github.shk0da.ib.client.IBClient
+import com.github.shk0da.ib.model.Position
 import com.github.shk0da.ib.model.TickType
 import com.ib.client.Contract
 import com.ib.client.Order
 import org.slf4j.LoggerFactory
-
 
 class Application {
 
@@ -71,9 +71,11 @@ class Application {
 
         if (null != placedOrder) {
             client.cancelOrder(placedOrder.orderId)
-        } else {
-            client.cancelAllOrders()
         }
+        log.info("open orders: {}", client.allOpenOrders())
+
+        val positions: List<Position> = client.positions()
+        log.info("positions: {}", positions)
 
         log.info("Done")
     }

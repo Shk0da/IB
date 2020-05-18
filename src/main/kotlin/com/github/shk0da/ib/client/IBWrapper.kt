@@ -1,9 +1,6 @@
 package com.github.shk0da.ib.client
 
-import com.github.shk0da.ib.model.AccountSummary
-import com.github.shk0da.ib.model.OpenOrder
-import com.github.shk0da.ib.model.TickData
-import com.github.shk0da.ib.model.Ticker
+import com.github.shk0da.ib.model.*
 import com.ib.client.*
 import org.slf4j.LoggerFactory
 
@@ -222,10 +219,6 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         TODO("Not yet implemented")
     }
 
-    override fun position(p0: String?, p1: Contract?, p2: Double, p3: Double) {
-        TODO("Not yet implemented")
-    }
-
     override fun verifyAndAuthCompleted(p0: Boolean, p1: String?) {
         TODO("Not yet implemented")
     }
@@ -282,10 +275,6 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
 
     override fun tickGeneric(p0: Int, p1: Int, p2: Double) {
         TODO("Not yet implemented")
-    }
-
-    override fun positionEnd() {
-        log.debug("positionEnd")
     }
 
     override fun verifyCompleted(p0: Boolean, p1: String?) {
@@ -500,11 +489,15 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         log.debug("next orderId: {}", ibClient.nextOrderId())
     }
 
-    override fun orderStatus(orderId: Int, status: String?, filled: Double, remaining: Double, avgFillPrice: Double,
-                             permId: Int, parentId: Int, lastFillPrice: Double, clientId: Int, whyHeld: String?, mktCapPrice: Double) {
-        log.debug("Order [orderId: $orderId, status: $status, filled: $filled, remaining: $remaining," +
-                " avgFillPrice: $avgFillPrice, permId: $permId, parentId: $parentId, lastFillPrice: $lastFillPrice, clientId: $clientId, " +
-                "whyHeld: $whyHeld, mktCapPrice: $mktCapPrice]")
+    override fun orderStatus(
+        orderId: Int, status: String?, filled: Double, remaining: Double, avgFillPrice: Double,
+        permId: Int, parentId: Int, lastFillPrice: Double, clientId: Int, whyHeld: String?, mktCapPrice: Double
+    ) {
+        log.debug(
+            "Order [orderId: $orderId, status: $status, filled: $filled, remaining: $remaining," +
+                    " avgFillPrice: $avgFillPrice, permId: $permId, parentId: $parentId, lastFillPrice: $lastFillPrice, clientId: $clientId, " +
+                    "whyHeld: $whyHeld, mktCapPrice: $mktCapPrice]"
+        )
 
         if ("Cancelled" == status?.toLowerCase()) {
             ibClient.requestEnd(orderId)
@@ -514,7 +507,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     override fun openOrder(orderId: Int, contract: Contract?, order: Order?, orderState: OrderState?) {
         log.trace(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState))
         val nextOrderId = ibClient.nextOrderId()
-        val id = if (orderId != nextOrderId)  nextOrderId else orderId
+        val id = if (orderId != nextOrderId) nextOrderId else orderId
         val list = (ibClient.requestGetValue(id) ?: ArrayList<OpenOrder>()) as MutableList<OpenOrder>
         list.add(OpenOrder(orderId, contract, order, orderState))
         ibClient.requestSetValue(id, list)
@@ -526,7 +519,21 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun orderBound(reqId: Long, apiClientId: Int, apiOrderId: Int) {
-        log.debug("!!!!! orderBound !!!!!!!!")
-        log.info(EWrapperMsgGenerator.orderBound(reqId, apiClientId, apiOrderId))
+        log.debug(EWrapperMsgGenerator.orderBound(reqId, apiClientId, apiOrderId))
+    }
+
+    override fun position(account: String, contract: Contract, position: Double, avgCost: Double) {
+        log.debug(
+            "Position. " + account + " - Symbol: " + contract.symbol() + ", SecType: " + contract.secType() + "," +
+                    " Currency: " + contract.currency() + ", Position: " + position + ", Avg cost: " + avgCost
+        )
+        val list = (ibClient.requestGetValue(0) ?: ArrayList<Position>()) as MutableList<Position>
+        list.add(Position(account, contract, position, avgCost))
+        ibClient.requestSetValue(0, list)
+    }
+
+    override fun positionEnd() {
+        log.debug("positionEnd")
+        ibClient.requestEnd(0)
     }
 }

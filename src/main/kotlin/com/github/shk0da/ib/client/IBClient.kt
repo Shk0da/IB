@@ -5,8 +5,10 @@ import com.github.shk0da.ib.model.TickType
 import com.ib.client.*
 import org.slf4j.LoggerFactory
 import java.io.IOException
+import java.lang.System.currentTimeMillis
 import java.lang.Thread.sleep
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit.SECONDS
 import java.util.concurrent.atomic.AtomicInteger
 
 class IBClient(host: String, port: Int, clientId: Int) {
@@ -111,6 +113,16 @@ class IBClient(host: String, port: Int, clientId: Int) {
     fun allOpenOrders(): List<OpenOrder> {
         client.reqAllOpenOrders()
         return getRequestResult(nextOrderId()) as List<OpenOrder>? ?: ArrayList()
+    }
+
+    fun positions(): List<Position> {
+        client.reqPositions()
+        val timeOut = currentTimeMillis() + SECONDS.toMillis(2)
+        while (!requestSetQueue.remove(0) && currentTimeMillis() < timeOut) {
+            sleep(SECONDS.toMillis(1))
+        }
+        client.cancelPositions()
+        return requestMapQueue.remove(0) as List<Position>? ?: ArrayList()
     }
 
     private fun getRequestResult(reqId: Int): Any? {
