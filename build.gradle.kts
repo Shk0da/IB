@@ -1,13 +1,17 @@
+import org.gradle.jvm.tasks.Jar
+
 plugins {
     kotlin("jvm") version "1.3.72"
 }
 
 group = "com.github.shk0da.ib"
-version = "1.0-SNAPSHOT"
+version = "0.1"
 
 repositories {
     mavenCentral()
 }
+
+apply(plugin = "maven")
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
@@ -22,5 +26,20 @@ tasks {
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "11"
+    }
+}
+
+val allowedLibs = listOf("TwsApi.jar")
+val richJar = task("richJar", type = Jar::class) {
+    from(configurations.runtimeClasspath.get()
+        .filter { allowedLibs.contains(it.name) }
+        .map({ if (it.isDirectory) it else zipTree(it) })
+    )
+    with(tasks.jar.get() as CopySpec)
+}
+
+tasks {
+    "build" {
+        dependsOn(richJar)
     }
 }
