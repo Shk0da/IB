@@ -24,6 +24,7 @@ class IBClient(host: String, port: Int, clientId: Int) {
 
     private val requestSetQueue = HashSet<Int>()
     private val requestMapQueue = ConcurrentHashMap<Int, Any?>()
+    private val ordersQueue = ConcurrentHashMap<Int, OpenOrder>()
 
     init {
         connect(host, port, clientId)
@@ -48,6 +49,10 @@ class IBClient(host: String, port: Int, clientId: Int) {
 
     internal fun requestSetValue(reqId: Int, value: Any?) {
         requestMapQueue[reqId] = value
+    }
+
+    internal fun ordersSetValue(reqId: Int, value: OpenOrder) {
+        ordersQueue[reqId] = value
     }
 
     fun socket(): EClientSocket {
@@ -91,13 +96,20 @@ class IBClient(host: String, port: Int, clientId: Int) {
     fun placeOrder(contract: Contract, order: Order): OpenOrder? {
         val orderId = nextOrderId()
         client.placeOrder(orderId, contract, order)
-        while (!requestSetQueue.contains(orderId)) {
-            allOpenOrders().forEach {
-                if (it.orderId == orderId) return it
+
+        val time = currentTimeMillis()
+        while (currentTimeMillis() - SECONDS.toMillis(30) < time) {
+            ordersQueue.forEach{
+                if (it.key == orderId) {
+                    val value = it.value
+                    setNextOrderId(orderId + 1)
+                    ordersQueue.remove(it.key)
+                    return value
+                }
             }
-            sleep(500)
+            sleep(1000)
         }
-        return getRequestResult(orderId) as OpenOrder?
+        return null
     }
 
     fun cancelOrder(orderId: Int) {

@@ -506,11 +506,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
 
     override fun openOrder(orderId: Int, contract: Contract?, order: Order?, orderState: OrderState?) {
         log.trace(EWrapperMsgGenerator.openOrder(orderId, contract, order, orderState))
-        val nextOrderId = ibClient.nextOrderId()
-        val id = if (orderId != nextOrderId) nextOrderId else orderId
-        val list = (ibClient.requestGetValue(id) ?: ArrayList<OpenOrder>()) as MutableList<OpenOrder>
-        list.add(OpenOrder(orderId, contract, order, orderState))
-        ibClient.requestSetValue(id, list)
+        ibClient.ordersSetValue(orderId, OpenOrder(orderId, contract, order, orderState))
     }
 
     override fun openOrderEnd() {
@@ -533,7 +529,6 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun positionEnd() {
-        log.debug("positionEnd")
         ibClient.requestEnd(0)
     }
 }
