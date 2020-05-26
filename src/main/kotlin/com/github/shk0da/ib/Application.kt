@@ -5,6 +5,7 @@ import com.github.shk0da.ib.model.Position
 import com.github.shk0da.ib.model.TickType
 import com.ib.client.Contract
 import com.ib.client.Order
+import com.ib.client.TagValue
 import org.slf4j.LoggerFactory
 import kotlin.math.abs
 import kotlin.math.round
@@ -39,6 +40,9 @@ class Application {
         ibkrTicker.secType("STK")
         ibkrTicker.currency("USD")
         ibkrTicker.exchange("ISLAND")
+
+        client.socket().reqMktData(123, ibkrTicker, "", true, true, ArrayList<TagValue>())
+        Thread.sleep(1_000)
 
         val ibkrTickerDetails = client.contractDetails(ibkrTicker)
         log.info("ibkrTickerDetails: {}", ibkrTickerDetails.contract().description())
@@ -80,6 +84,7 @@ class Application {
         log.info("positions: {}", positions)
 
         val totalCache = client.accountSummary("TotalCashBalance")!!.value.toDouble()
+        log.info("totalCache: {}", totalCache)
         for (it in mapOf(Pair("ADTN", 0.2), Pair("PZZA", 0.2), Pair("MSCI", 0.2))) {
             val allTickersByName = client.findAllTickersByName(it.key).filter { ticker ->
                 ticker.secType.name == "STK" && ticker.currency == "USD"

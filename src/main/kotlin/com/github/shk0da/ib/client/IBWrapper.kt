@@ -10,39 +10,39 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     private val log = LoggerFactory.getLogger(IBWrapper::class.java)
 
     override fun historicalData(p0: Int, p1: Bar?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun rerouteMktDepthReq(p0: Int, p1: Int, p2: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun mktDepthExchanges(p0: Array<out DepthMktDataDescription>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun histogramData(p0: Int, p1: MutableList<HistogramEntry>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickNews(p0: Int, p1: Long, p2: String?, p3: String?, p4: String?, p5: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun updateAccountTime(p0: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun verifyAndAuthMessageAPI(p0: String?, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun newsProviders(p0: Array<out NewsProvider>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun updateNewsBulletin(p0: Int, p1: Int, p2: String?, p3: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickOptionComputation(
@@ -57,11 +57,11 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p8: Double,
         p9: Double
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun scannerParameters(p0: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun scannerDataEnd(p0: Int) {
@@ -69,15 +69,15 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun verifyMessageAPI(p0: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun positionMulti(p0: Int, p1: String?, p2: String?, p3: Contract?, p4: Double, p5: Double) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun completedOrder(p0: Contract?, p1: Order?, p2: OrderState?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun connectAck() {
@@ -94,19 +94,19 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p6: Int,
         p7: Boolean
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun receiveFA(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalTicksBidAsk(p0: Int, p1: MutableList<HistoricalTickBidAsk>?, p2: Boolean) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalNews(p0: Int, p1: String?, p2: String?, p3: String?, p4: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun updatePortfolio(
@@ -119,7 +119,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p6: Double,
         p7: String?
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun securityDefinitionOptionalParameterEnd(p0: Int) {
@@ -127,15 +127,15 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun connectionClosed() {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun pnl(p0: Int, p1: Double, p2: Double, p3: Double) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalTicksLast(p0: Int, p1: MutableList<HistoricalTickLast>?, p2: Boolean) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun completedOrdersEnd() {
@@ -147,11 +147,11 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun familyCodes(p0: Array<out FamilyCode>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun rerouteMktDataReq(p0: Int, p1: Int, p2: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun error(ex: Exception?) {
@@ -172,7 +172,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun newsArticle(p0: Int, p1: Int, p2: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun positionMultiEnd(p0: Int) {
@@ -180,7 +180,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun pnlSingle(p0: Int, p1: Int, p2: Double, p3: Double, p4: Double, p5: Double) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun securityDefinitionOptionalParameter(
@@ -192,35 +192,35 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p5: MutableSet<String>?,
         p6: MutableSet<Double>?
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun softDollarTiers(p0: Int, p1: Array<out SoftDollarTier>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun headTimestamp(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun bondContractDetails(p0: Int, p1: ContractDetails?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun updateMktDepth(p0: Int, p1: Int, p2: Int, p3: Int, p4: Double, p5: Int) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun accountUpdateMulti(p0: Int, p1: String?, p2: String?, p3: String?, p4: String?, p5: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun currentTime(p0: Long) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun verifyAndAuthCompleted(p0: Boolean, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalNewsEnd(p0: Int, p1: Boolean) {
@@ -236,7 +236,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p5: String?,
         p6: String?
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun execDetailsEnd(p0: Int) {
@@ -244,15 +244,11 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun fundamentalData(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun tickSize(p0: Int, p1: Int, p2: Int) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalTicks(p0: Int, p1: MutableList<HistoricalTick>?, p2: Boolean) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickEFP(
@@ -266,7 +262,7 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p7: Double,
         p8: Double
     ) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun accountDownloadEnd(p0: String?) {
@@ -274,27 +270,27 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun tickGeneric(p0: Int, p1: Int, p2: Double) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun verifyCompleted(p0: Boolean, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickString(p0: Int, p1: Int, p2: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun updateAccountValue(p0: String?, p1: String?, p2: String?, p3: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun smartComponents(p0: Int, p1: MutableMap<Int, MutableMap.MutableEntry<String, Char>>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun deltaNeutralValidation(p0: Int, p1: DeltaNeutralContract?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun managedAccounts(accountsList: String?) {
@@ -302,11 +298,11 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun marketDataType(p0: Int, p1: Int) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun displayGroupUpdated(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun historicalDataEnd(p0: Int, p1: String?, p2: String?) {
@@ -314,23 +310,23 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
     }
 
     override fun historicalDataUpdate(p0: Int, p1: Bar?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun marketRule(p0: Int, p1: Array<out PriceIncrement>?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickReqParams(p0: Int, p1: Double, p2: String?, p3: Int) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun displayGroupList(p0: Int, p1: String?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun execDetails(p0: Int, p1: Contract?, p2: Execution?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun realtimeBar(
@@ -344,15 +340,11 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
         p7: Double,
         p8: Int
     ) {
-        TODO("Not yet implemented")
-    }
-
-    override fun tickPrice(p0: Int, p1: Int, p2: Double, p3: TickAttrib?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun commissionReport(p0: CommissionReport?) {
-        TODO("Not yet implemented")
+        log.trace("Not yet implemented")
     }
 
     override fun tickSnapshotEnd(p0: Int) {
@@ -530,5 +522,13 @@ internal class IBWrapper(private val ibClient: IBClient) : EWrapper {
 
     override fun positionEnd() {
         ibClient.requestEnd(0)
+    }
+
+    override fun tickPrice(p0: Int, p1: Int, p2: Double, p3: TickAttrib?) {
+        log.info("tickPrice: {} {} {} {}", p0, p1, p2, p3)
+    }
+
+    override fun tickSize(p0: Int, p1: Int, p2: Int) {
+        log.info("tickSize: {} {} {}", p0, p1, p2)
     }
 }
