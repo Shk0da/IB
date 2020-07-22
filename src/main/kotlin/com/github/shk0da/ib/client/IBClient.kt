@@ -29,6 +29,7 @@ class IBClient(host: String, port: Int, clientId: Int) {
     init {
         connect(host, port, clientId)
         attachDisconnectHook(this)
+        enableDelayedMarketData()
     }
 
     internal fun nextOrderId(): Int {
@@ -63,6 +64,16 @@ class IBClient(host: String, port: Int, clientId: Int) {
         return client.serverVersion()
     }
 
+    fun enableRequestedMarketData() {
+        log.info("Enable requested Market Data")
+        client.reqMarketDataType(1)
+    }
+
+    fun enableDelayedMarketData() {
+        log.info("Enable delayed Market Data")
+        client.reqMarketDataType(3)
+    }
+
     fun accountSummaryList(): List<AccountSummary> {
         val reqId = reqId()
         client.reqAccountSummary(reqId, "All", "\$LEDGER:USD")
@@ -87,6 +98,15 @@ class IBClient(host: String, port: Int, clientId: Int) {
         return getRequestResult(reqId) as ContractDetails
     }
 
+    fun tickLastData(contract: Contract): Pair<Double, Double> {
+        log.debug("More about tick fields: https://interactivebrokers.github.io/tws-api/tick_types.html")
+        val tickId = reqId()
+        client.reqMktData(tickId, contract, "", false, false, null)
+        val result = (getRequestResult(tickId) ?: Pair(0.0, 0.0)) as Pair<Double, Double>
+        client.cancelMktData(tickId)
+        return result
+    }
+
     fun tickByTickData(contract: Contract, tickType: TickType, numberOfTicks: Int, ignoreSize: Boolean): TickData? {
         val reqId = reqId()
         client.reqTickByTickData(reqId, contract, tickType.name, numberOfTicks, ignoreSize)
@@ -99,7 +119,7 @@ class IBClient(host: String, port: Int, clientId: Int) {
 
         val time = currentTimeMillis()
         while (currentTimeMillis() - SECONDS.toMillis(30) < time) {
-            ordersQueue.forEach{
+            ordersQueue.forEach {
                 if (it.key == orderId) {
                     val value = it.value
                     setNextOrderId(orderId + 1)

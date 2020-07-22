@@ -47,6 +47,21 @@ class Application {
         val ibkrTickerDetails = client.contractDetails(ibkrTicker)
         log.info("ibkrTickerDetails: {}", ibkrTickerDetails.contract().description())
 
+        val contract = Contract()
+        contract.symbol("AAPL")
+        contract.secType("STK")
+        contract.exchange("SMART")
+        contract.currency("USD")
+
+        log.info("tickLastData: {} -> {}", contract.symbol(), client.tickLastData(contract))
+
+        val contract2 = Contract()
+        contract2.symbol("GOOGL")
+        contract2.secType("STK")
+        contract2.exchange("SMART")
+        contract2.currency("USD")
+        log.info("tickLastData: {} -> {}", contract2.symbol(), client.tickLastData(contract2))
+
         val daxIndex = Contract()
         daxIndex.symbol("DAX")
         daxIndex.secType("IND")
